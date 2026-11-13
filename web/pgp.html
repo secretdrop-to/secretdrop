@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>PGP Public Key – SecretDrop.to</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="Our PGP public key for secure and encrypted communication with SecretDrop. Verify the fingerprint before importing.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/pgp">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+<a href="/" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</button>
+</header>
+<main class="page">
+<div class="page-head">
+<a href="/" class="page-back">← Back</a>
+<h1>PGP Public Key</h1>
+</div>
+<p class="page-lead">Use our PGP public key to send us encrypted messages or verify our signatures.</p>
+
+<div class="pgp-hero">
+<div class="pgp-fp-card">
+<div class="pgp-fp-label">Fingerprint</div>
+<div class="pgp-fp-value" id="pgp-fingerprint-text">8176 7114 C05B 3045 0071
+2460 2630 DF27 86E3 39A6</div>
+<button class="btn pgp-fp-copy" data-copy-target="pgp-fingerprint-text">Copy Fingerprint</button>
+<div class="pgp-fp-hint">Verify before importing</div>
+</div>
+<div class="pgp-details">
+<h3>Public Key</h3>
+<div class="pgp-email-row">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+<strong>secretdropto@protonmail.com</strong>
+</div>
+<pre id="pgp-key-content" class="pgp-key-block"><!--#include virtual="/pgp.txt" --></pre>
+<div class="pgp-actions">
+<button class="btn" data-copy-target="pgp-key-content">Copy Key</button>
+<button class="btn secondary" data-download-target="pgp-key-content" data-download-name="secretdrop_pub.asc" data-download-mime="application/pgp-keys">Download .asc</button>
+</div>
+<div class="pgp-warn">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+<span>Always compare the imported fingerprint with the one above. A single mismatched character means the key cannot be trusted.</span>
+</div>
+</div>
+</div>
+
+<div class="pgp-meta-grid">
+<div class="pgp-meta-card">
+<svg class="pgp-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+<strong>ed25519</strong><span>EdDSA · primary</span>
+</div>
+<div class="pgp-meta-card">
+<svg class="pgp-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+<strong>2026-04-16</strong><span>Key created</span>
+</div>
+<div class="pgp-meta-card">
+<svg class="pgp-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+<strong>2630DF2786E339A6</strong><span>Long key ID</span>
+</div>
+<div class="pgp-meta-card">
+<svg class="pgp-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+<strong>Curve25519</strong><span>ECDH · encryption subkey</span>
+</div>
+</div>
+
+<div class="pgp-context">
+<div class="side-card">
+<h4>How to import</h4>
+<ol class="pgp-steps">
+<li>Download the <strong>.asc</strong> file above or copy the key block.</li>
+<li>GnuPG: <code>gpg --import secretdrop_pub.asc</code></li>
+<li>Kleopatra / Thunderbird / your mail client: use <em>Import key</em> and select the file.</li>
+<li>Or fetch it straight from keys.openpgp.org: <code>gpg --keyserver hkps://keys.openpgp.org --recv-keys 81767114C05B3045007124602630DF2786E339A6</code></li>
+</ol>
+</div>
+<div class="side-card">
+<h4>How to verify</h4>
+<ol class="pgp-steps">
+<li>List the imported key: <code>gpg --fingerprint 2630DF2786E339A6</code></li>
+<li>Compare every character to the fingerprint shown above.</li>
+<li>Cross-check against the signature in our <a href="/canary">Warrant Canary</a> or in <a href="/mirrors.txt">mirrors.txt</a>, the list of our official addresses. Both are signed with this exact key.</li>
+<li>Email lookups (e.g. <code>gpg --locate-keys</code>) may return Proton Mail's automatic key. That key never signs our statements. Use the key above, which <a href="https://keys.openpgp.org/search?q=secretdropto%40protonmail.com" target="_blank" rel="noopener noreferrer">keys.openpgp.org&nbsp;<span aria-hidden="true">↗</span></a> lists as verified for our address.</li>
+</ol>
+</div>
+</div>
+
+</main>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/subpages.js"></script>
+</body>
+</html>

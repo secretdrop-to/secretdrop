@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>FAQ – SecretDrop.to</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="Frequently asked questions about SecretDrop's encryption, privacy, anonymity, and how one-time secret sharing works.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/faq">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+<a href="/" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</button>
+</header>
+<main>
+<div class="page-head-sub">
+<a href="/" class="page-back">← Back</a>
+<h1 class="subpage-h2">Frequently Asked Questions</h1>
+</div>
+<p class="subpage-intro">Everything you might want to know about encryption, privacy, and how SecretDrop works.</p>
+
+<div class="faq-kb">
+
+<section class="faq-section" id="cat-getting">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Getting Started</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>What is SecretDrop?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>SecretDrop is a free, zero-knowledge service for sharing one-time encrypted messages and files. You write a secret, get a unique link, and share it with the recipient. After it has been read once, or once the expiration window has passed, the secret is permanently destroyed.</p>
+<p>The service is designed so that <strong>even we cannot read your secret</strong>. All encryption happens in your browser before anything reaches our server.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item" id="how-it-works">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>How does it work in a nutshell?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>1. You type a secret (and optionally a password) into your browser.<br>
+2. Your browser generates a random key (or derives one from your password with <strong>Argon2id</strong>) and encrypts the secret with <strong>AES-256-GCM</strong>.<br>
+3. Only encrypted data is uploaded to our server, plus a random salt and a verification tag. Neither contains your key or password. The random key stays in the URL fragment (<code>#…</code>) and never reaches our server.<br>
+4. The recipient opens the link, their browser decrypts the content locally, and the server destroys the ciphertext.</p>
+<p>The full technical picture is on our <a href="/security">Security page</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Is SecretDrop really free?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes, completely free, with no accounts, no ads, and no tracking. The service runs on privately funded infrastructure. If you want to support the project, you can <a href="/donate">donate via Monero</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can I share the link as a QR code?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. After creating a message or file secret, click <strong>Show QR Code</strong>. The code is rendered entirely in your browser and can be downloaded as a PNG. A QR code is a quick way to get a secret onto a phone.</p>
+<p>It encodes the full link <strong>including the decryption key</strong>, so the QR image is as sensitive as the link itself.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can I send a code instead of a link?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. After creating a secret, choose the <strong>Code</strong> tab and copy it. The recipient opens secretdrop.to or our onion service and pastes the code under <strong>Retrieve secret</strong>. Because it is not a link, chat apps won't show a preview of it.</p>
+<p>Anyone with the code can open the secret, just like with the link.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="faq-section" id="cat-security">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Security &amp; Encryption</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item" id="encryption">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Which encryption do you use?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>We use <strong>AES-256-GCM</strong> for authenticated symmetric encryption. Secrets without a password get a random 256-bit key, expanded with <strong>HKDF</strong>. With a password, the key is derived from it with <strong>Argon2id</strong> (memory: 64 MiB, iterations: 3, parallelism: 1). AES-GCM and HKDF run via the browser's Web Crypto API, Argon2id via WebAssembly. All three are widely studied, standardized algorithms.</p>
+<p>The verification tag the server stores is computed only after Argon2id. So every password guess has to run Argon2id once, even for someone with a copy of our database. A five-word passphrase from the dice button (about 52 bits) makes that impractical. A short or common password does not, so the site refuses those. The check runs in your browser against a list we host ourselves.</p>
+<p>Random values (IVs, salts, keys) come from <code>crypto.getRandomValues()</code>, a cryptographically secure RNG.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>What does "zero-knowledge" really mean?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>It means the server cannot read what it stores and never sees a decryption key or password. Without a password, the key is in the URL fragment (the part after <code>#</code>), which is processed entirely client-side and is not transmitted in HTTP requests. With a password, your browser derives the key from it.</p>
+<p>Even if our server were compromised or seized, the stored secrets could not be read without the key from the link or the password.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can you read my secret?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>No. We have no technical way to decrypt your secret. We never receive the password, the derived key or the key from the link. The AES-GCM authentication tag also makes it impossible to silently modify the ciphertext without detection. We can't even tell how long it is: every message is padded to the same size before encryption, and files are rounded up so only their approximate size remains visible.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Why protect a secret with an additional password?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>With a password, the link no longer contains a key. The password itself becomes the key, so if the link leaks (forwarded chat, screenshot, browser history), the secret stays unreadable without the separately shared password.</p>
+<p>Send the link and the password over two different channels, for example the link by email and the password over Signal.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can I generate a secure password automatically?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. Click the dice icon next to the password field. It creates a passphrase of 5 randomly chosen words, which is roughly 52 bits of entropy.</p>
+<p>Use the <strong>copy</strong> button to transfer it to your clipboard, then share it with the recipient over a separate channel. Clear your clipboard afterwards, because other apps on your device can read it.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>What happens after 5 wrong password attempts?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>The secret is destroyed: after the 5th wrong attempt it is deleted from our database and cannot be retrieved again. Your browser never sends the password itself. It derives a verification tag (HMAC-SHA-256) from it, and the server only compares that tag with the stored one.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="faq-section" id="cat-storage">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Storage &amp; Lifetime</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>How long is a secret stored?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>You choose the expiration window when creating the secret. It ranges from 1 hour up to 7 days for messages and up to 3 days for files. After that, the entry is automatically deleted from our database, even if it was never retrieved.</p>
+<p>A secret is also destroyed immediately after the first successful retrieval.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Where exactly is the data stored?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>On a single server, and only ever as <strong>encrypted ciphertext that we cannot read</strong>. We don't replicate secrets to other servers and we don't back them up. A secret exists only until it's retrieved once or its expiry window passes. After that it's permanently deleted from our database and can't be retrieved again.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can I delete a secret before it is opened?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. Open the link yourself and click <strong>Retrieve secret</strong>. The secret is deleted right away, and anyone who opens the link afterwards only sees that it was not found or already deleted. If it has a password, you need to enter it. Five wrong attempts also delete it. This is useful if you sent the link to the wrong person or changed your mind.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Can I recover a secret I accidentally deleted?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>No, and that is by design. Once a secret has been retrieved, expired, or hit the attempt limit, it is gone forever. Keep your own copy of anything you cannot afford to lose.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="faq-section" id="cat-files">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Files &amp; Media</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Is there a size limit for files?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. You can attach up to <strong>10 files</strong> with a combined size of <strong>50 MB</strong>. For larger files, upload them to a storage service (ideally encrypted first) and use SecretDrop to share the download link and any password as a one-time secret.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Are file names hidden from the recipient?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>All file names are encrypted in your browser, so our server never sees them either way. The <strong>Anonymize file names</strong> option is on by default. It also replaces the name the <em>recipient</em> sees with a random one, and only the file extension stays.</p>
+<p>Turn it off if the recipient needs the original names.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Do you remove image metadata (EXIF)?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes, when <strong>Remove image metadata</strong> is enabled (the default). Before encryption, your browser cuts the metadata out of the image file, such as EXIF, GPS location, camera details, color profiles and embedded previews. Only what is needed to display the image is kept, including the rotation of JPEG photos so they stay upright. <strong>The picture itself is not touched</strong>, so there is no quality loss and the dimensions are unchanged.</p>
+<p>Supported formats are <strong>JPEG, PNG and WebP</strong>. Other image formats such as HEIC, GIF or AVIF can't be cleaned this way, so nothing is uploaded until you turn the option off.</p>
+<p>This applies to <strong>images only</strong>: other file types (PDFs, documents, …) are uploaded unchanged, so strip sensitive metadata from those yourself first.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="faq-section" id="cat-anonymity">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Anonymity</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Do you log IP addresses?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>No. Our server keeps no access logs. IP addresses are held only briefly in memory for rate limits against abuse and are never written to disk. On the clearnet site, requests pass through Cloudflare, which may keep its own logs.</p>
+<p>Over our <strong>Tor onion service</strong>, Cloudflare is not involved and your IP address never reaches us. The connection stays inside Tor, with no exit node and no DNS lookup.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Do I need an account or email?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>No. You don't sign up and you don't give us an email address. We set no cookies of our own and use no analytics.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Is the SecretDrop operator anonymous?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. SecretDrop is operated anonymously and is not affiliated with any company or legal entity. You can reach us by email, encrypted with our PGP key.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="faq-section" id="cat-trust">
+<div class="faq-section-head">
+<div>
+<h3 class="faq-section-title">Trust &amp; Verification</h3>
+</div>
+</div>
+<div class="panel">
+<div class="panel-body">
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>How can I verify nothing shady is happening?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>The full source code of this site and our server is on <a href="https://github.com/secretdrop-to/secretdrop" target="_blank" rel="noopener noreferrer">GitHub&nbsp;<span aria-hidden="true">↗</span></a>. You can read it and compare the files of the site with what your browser loads. What runs on our server cannot be checked from outside. That is why the encryption happens in your browser, where you can check it.</p>
+<p>Open your browser's developer tools (Network &amp; Sources tab) and inspect what's actually sent. You will see that only the encrypted data and a few technical values (the ID, salt, verification tag, expiry window and anti-abuse token) leave your device, never the password or the key.</p>
+<p>A strict Content-Security-Policy limits code to our own origin. On the Tor onion service it allows nothing third-party at all. On the clearnet site it also allows the Cloudflare Turnstile bot-check. That is the single third-party script, and you can avoid it entirely by using the onion service.</p>
+<p>The open-source libraries we host ourselves (Argon2 and the QR code generator), the dice word list and the common password list are listed with their licenses in <a href="/licenses.txt">licenses.txt</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Is there a warrant canary?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes, see our <a href="/canary">Warrant Canary</a>. It is PGP-signed and renewed at least every 31 days. If it disappears or is more than 31 days old, its statements can no longer be relied on.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Do you run your own Tor relay?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Yes. We contribute bandwidth to the Tor network. You can see live metrics for our relays on the <a href="https://relay.secretdrop.to">relay status page</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>How can I contact you securely?</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>Write to <strong>secretdropto@protonmail.com</strong>, encrypted with our <a href="/pgp">PGP key</a> (also listed on <a href="https://keys.openpgp.org/search?q=secretdropto%40protonmail.com" target="_blank" rel="noopener noreferrer">keys.openpgp.org&nbsp;<span aria-hidden="true">↗</span></a>). Verify the fingerprint <code>8176 7114 C05B 3045 0071 2460 2630 DF27 86E3 39A6</code> before importing.</p>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+</div>
+</main>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/subpages.js"></script>
+</body>
+</html>

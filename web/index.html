@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-translations="de es fr pt ru zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>SecretDrop.to – One-Time Encrypted Secret Sharing</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="Share messages and files via a link that works exactly once. Client-side AES-256-GCM encryption, optional password (Argon2id). Zero-knowledge. No account required.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://secretdrop.to/">
+<meta property="og:title" content="SecretDrop.to – One-Time Encrypted Secret Sharing">
+<meta property="og:description" content="Share messages and files via a link that works exactly once. Client-side AES-256-GCM encryption. Zero-knowledge. No account required.">
+<meta property="og:site_name" content="SecretDrop.to">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SecretDrop.to – One-Time Encrypted Secret Sharing">
+<meta name="twitter:description" content="Share messages and files via a link that works exactly once. Client-side AES-256-GCM encryption. Zero-knowledge.">
+<link rel="stylesheet" href="/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"SecretDrop.to","url":"https://secretdrop.to","description":"Share messages and files securely via a one-time link. Client-side AES-256-GCM encryption, optional password protection with Argon2id. Zero-knowledge architecture. No account required.","applicationCategory":"SecurityApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["AES-256-GCM client-side encryption","Argon2id memory-hard key derivation for passwords","Zero-knowledge architecture","One-time secret links","File and message sharing","No account required"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"SecretDrop.to","alternateName":"SecretDrop","url":"https://secretdrop.to/"}
+</script>
+</head>
+<body spellcheck="false" writingsuggestions="false">
+<div class="wrap">
+<!--#include virtual="/_includes/notice.html" -->
+<noscript><div class="noscript-warn">SecretDrop requires JavaScript for client-side encryption. All encryption and decryption happens entirely in your browser. Please enable JavaScript to continue.</div></noscript>
+<header>
+<a href="/" id="brand-link" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<nav class="top-nav" aria-label="Main">
+<button type="button" class="top-link" id="btn-open-retrieve" data-i18n="home.btn_retrieve">Retrieve secret</button>
+<div class="ttl-select lang-select" id="lang-select" data-ttl-name="lang">
+<button type="button" class="ttl-trigger" aria-haspopup="listbox" aria-expanded="false"><svg class="ttl-trigger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span class="ttl-trigger-label">English</span></button>
+<div class="ttl-panel" role="listbox">
+<input type="radio" name="lang" id="lang-en" value="en" checked><label for="lang-en" role="option">English</label>
+<input type="radio" name="lang" id="lang-de" value="de"><label for="lang-de" role="option">Deutsch</label>
+<input type="radio" name="lang" id="lang-es" value="es"><label for="lang-es" role="option">Español</label>
+<input type="radio" name="lang" id="lang-fr" value="fr"><label for="lang-fr" role="option">Français</label>
+<input type="radio" name="lang" id="lang-pt" value="pt"><label for="lang-pt" role="option">Português</label>
+<input type="radio" name="lang" id="lang-ru" value="ru"><label for="lang-ru" role="option">Русский</label>
+<input type="radio" name="lang" id="lang-zh" value="zh"><label for="lang-zh" role="option">中文</label>
+</div>
+</div>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+<span class="theme-label">Dark</span>
+<span class="theme-label">Light</span>
+</button>
+</nav>
+</header>
+<section class="screen active" id="screen-create">
+<div class="hero">
+<h1><span data-i18n="home.title_1">Send confidentially.</span> <span data-i18n="home.title_2">Read once.</span></h1>
+<p class="hero-lead" data-i18n="home.lead">Share an encrypted message or file via a link that works exactly once. Afterwards, the secret is gone.</p>
+<div class="panel composer" id="letter">
+<div class="panel-body">
+<div class="segment">
+<button id="mode-text-btn" class="active" data-i18n="create.tab_msg">Message</button>
+<button id="mode-file-btn" data-i18n="create.tab_file">File</button>
+</div>
+<div id="text-mode">
+<div class="field">
+<label for="msg" data-i18n="create.lbl_msg">Message</label>
+<textarea id="msg" placeholder="Write your confidential message here..." data-i18n-placeholder="create.plc_msg" maxlength="10000"></textarea>
+<div class="meta-row">
+<div class="inline-secure">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<span data-i18n="create.encryption_label">AES-256-GCM encrypted</span>
+</div>
+<div class="counter" id="msg-counter">0 / 10,000</div>
+</div>
+</div>
+<div class="row">
+<div class="field">
+<label for="msg-ttl" data-i18n="create.lbl_expiry">Expiration</label>
+<div class="ttl-select" data-ttl-name="msg-ttl">
+<button type="button" class="ttl-trigger" aria-haspopup="listbox" aria-expanded="false"><svg class="ttl-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span class="ttl-trigger-label" data-i18n="create.time_1d">1 day</span></button>
+<div class="ttl-panel" role="listbox">
+<input type="radio" name="msg-ttl" id="msg-ttl-3600" value="3600"><label for="msg-ttl-3600" role="option" data-i18n="create.time_1h">1 hour</label>
+<input type="radio" name="msg-ttl" id="msg-ttl-43200" value="43200"><label for="msg-ttl-43200" role="option" data-i18n="create.time_12h">12 hours</label>
+<input type="radio" name="msg-ttl" id="msg-ttl-86400" value="86400" checked><label for="msg-ttl-86400" role="option" data-i18n="create.time_1d">1 day</label>
+<input type="radio" name="msg-ttl" id="msg-ttl-259200" value="259200"><label for="msg-ttl-259200" role="option" data-i18n="create.time_3d">3 days</label>
+<input type="radio" name="msg-ttl" id="msg-ttl-604800" value="604800"><label for="msg-ttl-604800" role="option" data-i18n="create.time_7d">7 days</label>
+</div>
+</div>
+</div>
+<div class="field">
+<label for="msg-pw" data-i18n="create.lbl_pwd">Password</label>
+<div class="pw-wrap">
+<input id="msg-pw" type="password" placeholder="Optional..." data-i18n-placeholder="global.optional">
+<button type="button" class="pw-dice" data-pw-target="msg-pw" aria-label="Generate passphrase" title="Generate passphrase">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="8" cy="16" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="16" cy="16" r="1.3" fill="currentColor" stroke="none"></circle></svg>
+</button>
+<button type="button" class="pw-copy" data-pw-target="msg-pw" aria-label="Copy password" title="Copy password">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+</button>
+<button type="button" class="pw-toggle" data-pw-target="msg-pw" aria-label="Toggle password visibility">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+<div class="pw-strength hide" id="msg-pw-strength"><div class="pw-strength-track"><div class="pw-strength-fill"></div></div><span class="pw-strength-label"></span></div>
+<p class="pw-hint hide" id="msg-pw-hint"></p>
+</div>
+</div>
+<button class="btn" id="msg-btn" disabled data-i18n="create.btn_submit">Create secret</button>
+<div class="result" id="msg-result">
+<div class="segment result-tabs">
+<button type="button" class="active" data-view="link" data-i18n="create.tab_link">Link</button>
+<button type="button" data-view="onion">Onion</button>
+<button type="button" data-view="code" data-i18n="create.tab_code">Code</button>
+</div>
+<div class="result-row">
+<div class="result-url" id="msg-url"></div>
+<button class="copy" id="msg-copy" data-i18n="global.copy">Copy</button>
+</div>
+<p class="result-note result-note--code" data-i18n="create.result_code_hint">The recipient opens secretdrop.to or our Onion address and pastes the code under “Retrieve secret”.</p>
+<p class="result-note result-note--onion" data-i18n="create.result_onion_hint">Opens only in Tor Browser.</p>
+<p class="result-note result-note--pw" data-i18n="create.result_pw_hint">Send the password separately, not in the same message.</p>
+<p class="result-note result-valid" id="msg-valid"></p>
+<div class="qr-section">
+<button class="btn secondary btn--sm-full" id="msg-qr-btn" data-i18n="create.btn_qr_show">Show QR Code</button>
+<div id="msg-qr" class="qr-container hide"></div>
+</div>
+<button class="btn secondary btn--sm-full result-new" data-i18n="retrieve.btn_new_secret">Create new secret</button>
+</div>
+</div>
+<div id="file-mode" class="hide">
+<div class="dropzone" id="dropzone">
+<div>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 16V4"></path>
+<path d="m7 9 5-5 5 5"></path>
+<path d="M20 16.5v1a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-1"></path>
+</svg>
+<strong data-i18n="create.file_drop_title">Select file here</strong>
+<span data-i18n="create.file_drop_desc">Maximum 50 MB · Up to 10 files</span>
+</div>
+<input id="file" type="file" multiple hidden>
+</div>
+<div id="file-list-container"></div>
+<div class="meta-row meta-row--file">
+<div class="inline-secure">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<span data-i18n="create.encryption_label">AES-256-GCM encrypted</span>
+</div>
+</div>
+<div class="privacy-options">
+<label class="custom-checkbox-wrap">
+<input type="checkbox" id="file-anon-names" checked>
+<span class="custom-checkbox"></span>
+<span data-i18n="create.anon_names">Anonymize file names</span>
+</label>
+<label class="custom-checkbox-wrap">
+<input type="checkbox" id="file-strip-meta" checked>
+<span class="custom-checkbox"></span>
+<span data-i18n="create.strip_meta">Remove image metadata</span>
+</label>
+</div>
+<div class="row row--mt">
+<div class="field">
+<label for="file-ttl" data-i18n="create.lbl_expiry">Expiration</label>
+<div class="ttl-select" data-ttl-name="file-ttl">
+<button type="button" class="ttl-trigger" aria-haspopup="listbox" aria-expanded="false"><svg class="ttl-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span class="ttl-trigger-label" data-i18n="create.time_1d">1 day</span></button>
+<div class="ttl-panel" role="listbox">
+<input type="radio" name="file-ttl" id="file-ttl-3600" value="3600"><label for="file-ttl-3600" role="option" data-i18n="create.time_1h">1 hour</label>
+<input type="radio" name="file-ttl" id="file-ttl-43200" value="43200"><label for="file-ttl-43200" role="option" data-i18n="create.time_12h">12 hours</label>
+<input type="radio" name="file-ttl" id="file-ttl-86400" value="86400" checked><label for="file-ttl-86400" role="option" data-i18n="create.time_1d">1 day</label>
+<input type="radio" name="file-ttl" id="file-ttl-172800" value="172800"><label for="file-ttl-172800" role="option" data-i18n="create.time_2d">2 days</label>
+<input type="radio" name="file-ttl" id="file-ttl-259200" value="259200"><label for="file-ttl-259200" role="option" data-i18n="create.time_3d">3 days</label>
+</div>
+</div>
+</div>
+<div class="field">
+<label for="file-pw" data-i18n="create.lbl_pwd">Password</label>
+<div class="pw-wrap">
+<input id="file-pw" type="password" placeholder="Optional..." data-i18n-placeholder="global.optional">
+<button type="button" class="pw-dice" data-pw-target="file-pw" aria-label="Generate passphrase" title="Generate passphrase">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle cx="8" cy="8" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="8" cy="16" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="16" cy="16" r="1.3" fill="currentColor" stroke="none"></circle></svg>
+</button>
+<button type="button" class="pw-copy" data-pw-target="file-pw" aria-label="Copy password" title="Copy password">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+</button>
+<button type="button" class="pw-toggle" data-pw-target="file-pw" aria-label="Toggle password visibility">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+<div class="pw-strength hide" id="file-pw-strength"><div class="pw-strength-track"><div class="pw-strength-fill"></div></div><span class="pw-strength-label"></span></div>
+<p class="pw-hint hide" id="file-pw-hint"></p>
+</div>
+</div>
+<button class="btn" id="file-btn" disabled data-i18n="create.btn_submit">Create secret</button>
+<div id="upload-progress-wrap" class="progress-wrap hide">
+<div class="progress-header">
+<span data-i18n="create.upload_label">Encrypt & Upload</span>
+<span id="upload-progress-text">0%</span>
+</div>
+<div class="progress-track">
+<div id="upload-progress-bar" class="progress-fill"></div>
+</div>
+</div>
+<div class="result" id="file-result">
+<div class="segment result-tabs">
+<button type="button" class="active" data-view="link" data-i18n="create.tab_link">Link</button>
+<button type="button" data-view="onion">Onion</button>
+<button type="button" data-view="code" data-i18n="create.tab_code">Code</button>
+</div>
+<div class="result-row">
+<div class="result-url" id="file-url"></div>
+<button class="copy" id="file-copy" data-i18n="global.copy">Copy</button>
+</div>
+<p class="result-note result-note--code" data-i18n="create.result_code_hint">The recipient opens secretdrop.to or our Onion address and pastes the code under “Retrieve secret”.</p>
+<p class="result-note result-note--onion" data-i18n="create.result_onion_hint">Opens only in Tor Browser.</p>
+<p class="result-note result-note--pw" data-i18n="create.result_pw_hint">Send the password separately, not in the same message.</p>
+<p class="result-note result-valid" id="file-valid"></p>
+<div class="qr-section">
+<button class="btn secondary btn--sm-full" id="file-qr-btn" data-i18n="create.btn_qr_show">Show QR Code</button>
+<div id="file-qr" class="qr-container hide"></div>
+</div>
+<button class="btn secondary btn--sm-full result-new" data-i18n="retrieve.btn_new_secret">Create new secret</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section class="sec life" aria-labelledby="life-title">
+<h2 class="sec-title" id="life-title" data-i18n="home.proto_title">Create, share, gone.</h2>
+<div aria-hidden="true">
+<div class="op-card">
+<div class="op-card-stage">
+<div class="op-phase op-msg"><span class="op-ph-k">Message</span><span class="op-msg-row"><span class="op-msg-text">password: hX9$kP2!vRq</span></span></div>
+<div class="op-phase op-cipher"><span class="op-ph-k">Encrypted in the browser</span><span class="op-cipher-v">iKfgDdeMXJgqlGn2+nobiTkl192z+VX/QTgbQ1pz1XrdKwnQ9aHfc3Uh4dwZ0vCkXYCr8rs4idwPwkXHrzqz3Q==</span></div>
+<div class="op-phase op-linkwrap"><div class="op-link-inner"><span class="op-ph-k">Shared link</span><span class="op-link-box"><span class="op-link-v">https://secretdrop.to/<span class="op-id">#3f47b9ee-8935-4a8e-ac0f-777a19accb38</span><span class="op-key">.RkWh4XwtyU-pxAF6npPAsPIpSalQr5k0f8NucVcKVWQ</span></span></span></div></div>
+<span class="op-scan"></span>
+<div class="op-stamp"><span class="op-led"></span><span>Secret destroyed</span></div>
+</div>
+<div class="op-stub"><span class="op-n1">1×</span><span class="op-n0">0×</span></div>
+</div>
+</div>
+<div class="life-copy">
+<ol class="life-steps">
+<li><div><strong data-i18n="home.step1_t">Write or upload</strong><p data-i18n="home.step1_d">Type a message or drop files. Add a password and choose how long it stays available.</p></div></li>
+<li class="life-step--share"><div><strong data-i18n="home.step2_t">Share the link</strong><p data-i18n="home.step2_d">A unique link is generated in your browser. Send it through any channel you trust.</p></div></li>
+<li class="life-step--gone"><div><strong data-i18n="home.step3_t">It self-destructs</strong><p data-i18n="home.step3_d">Once it is opened, the secret is decrypted on your device and permanently erased from the server.</p></div></li>
+</ol>
+</div>
+</section>
+<section class="sec" aria-labelledby="anat-title">
+<div class="sec-head">
+<h2 class="sec-title" id="anat-title" data-i18n="home.anat_title">Anatomy of a link</h2>
+<p class="sec-lead" data-i18n="home.anat_lead">Every SecretDrop link has three parts. The last one never leaves the browser.</p>
+</div>
+<ol class="anat-parts">
+<li class="anat-part"><code>https://secretdrop.to/</code><div class="anat-info"><strong data-i18n="home.anat_addr_t">Address</strong><p data-i18n="home.anat_addr_d">Loads this page. Browsers never send anything after the # to a server.</p></div></li>
+<li class="anat-part anat-part--id"><code>#6c1e0f3a-8b2d-4f57-9a3e-1d4c7b9e2f60</code><div class="anat-info"><strong data-i18n="home.anat_id_t">ID</strong><p data-i18n="home.anat_id_d">Your browser uses it to fetch one encrypted blob. Our server releases it once, then erases it.</p></div></li>
+<li class="anat-part anat-part--key"><code>.q8Zr3VbN0xT5kLw7HcY2mPd9sJf4Ga6Ue1QoRiXnB-_</code><div class="anat-info"><strong data-i18n="home.anat_key_t">Key</strong><p data-i18n="home.anat_key_d">Decrypts the secret on the recipient’s device. It never reaches our server.</p></div></li>
+</ol>
+<p class="anat-note" data-i18n="home.anat_pw">With a password, the link carries no key at all. Your browser derives the key from the password with Argon2id.</p>
+</section>
+<section class="sec" aria-labelledby="verify-title">
+<h2 class="sec-title" id="verify-title" data-i18n="home.trans_title" data-i18n-sentences>Don't just trust us. Verify.</h2>
+<ul class="verify-list">
+<li class="verify--canary"><a href="/canary"><span class="verify-name" data-i18n="home.trust_canary_t">Warrant canary</span><span class="verify-desc" data-i18n="home.trust_canary_d">We attest that we have received no data requests and run no backdoors. If this page ever stops updating, take note.</span><span class="verify-val">/canary · PGP-signed</span></a></li>
+<li class="verify--tor"><a href="http://secretdimtmcoa7iq2lqkmwmrbze5qknena75f5xlge226jmxfrcg5yd.onion/" rel="noopener"><span class="verify-name" data-i18n="home.trust_onion_t">Tor onion service</span><span class="verify-desc" data-i18n="home.trust_onion_d">Reach SecretDrop as a hidden service for network-level anonymity. Best opened in Tor Browser.</span><span class="verify-val">secretdim…g5yd.onion</span></a></li>
+<li><a href="https://github.com/secretdrop-to/secretdrop" rel="noopener noreferrer"><span class="verify-name" data-i18n="home.trust_source_t">Source code</span><span class="verify-desc" data-i18n="home.trust_source_d">The code of this site and our server is public. Compare it with what your browser loads.</span><span class="verify-val">GitHub · secretdrop-to</span></a></li>
+</ul>
+</section>
+</section>
+<section class="screen page" id="screen-retrieve">
+<div class="page-head">
+<a class="page-back" id="back-retrieve" data-i18n="global.back">← Back</a>
+<h2 data-i18n="retrieve.title">Retrieve secret</h2>
+</div>
+<p class="page-lead" data-i18n="retrieve.subtitle">Open once and save securely.</p>
+<div class="layout">
+<div class="panel">
+<div class="panel-body">
+<div id="retrieve-inputs">
+<div class="notice" id="retrieve-notice" data-i18n="retrieve.notice">This secret will be permanently deleted after retrieval. Save it right away if you need it later.</div>
+<div class="row">
+<div class="field field--rid">
+<label for="rid" data-i18n="retrieve.lbl_id">Link or code</label>
+<input id="rid" type="text" placeholder="Paste link or code..." data-i18n-placeholder="retrieve.plc_id" autocomplete="off" autocapitalize="off" autocorrect="off">
+<p class="field-hint" data-i18n="hints.desc">If you paste a complete link here, the ID and key will be applied automatically.</p>
+</div>
+<div class="field field--rpw">
+<label for="rpw" data-i18n="retrieve.lbl_pwd">Password from the sender</label>
+<div class="pw-wrap">
+<input id="rpw" type="password">
+<button type="button" class="pw-toggle" data-pw-target="rpw" aria-label="Toggle password visibility">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</button>
+</div>
+</div>
+</div>
+<button class="btn" id="btn-retrieve-submit" data-i18n="retrieve.btn_submit">Retrieve secret</button>
+<p class="retrieve-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="10.5" width="17" height="10" rx="2.5"></rect><path d="M7.5 10.5v-2a4.5 4.5 0 0 1 9 0v2"></path></svg><span><span data-i18n="retrieve.e2e_note">Decrypted in your browser. The key never reaches our server.</span> <a href="/faq#how-it-works" target="_blank" rel="noopener" data-i18n="retrieve.e2e_link">How it works</a></span></p>
+<div class="status" id="status"></div>
+</div>
+<div id="retrieve-progress-wrap" class="progress-wrap hide">
+<div class="progress-header">
+<span id="retrieve-progress-label" data-i18n="retrieve.phase_download">Downloading</span>
+<span id="retrieve-progress-text">0%</span>
+</div>
+<div class="progress-track">
+<div id="retrieve-progress-bar" class="progress-fill"></div>
+</div>
+<p id="retrieve-progress-size" class="progress-size hide"></p>
+<p class="progress-keep" data-i18n="retrieve.keep_open">Keep this tab open. The secret has already been deleted from our server.</p>
+<p class="retrieve-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="10.5" width="17" height="10" rx="2.5"></rect><path d="M7.5 10.5v-2a4.5 4.5 0 0 1 9 0v2"></path></svg><span data-i18n="retrieve.e2e_note">Decrypted in your browser. The key never reaches our server.</span></p>
+</div>
+<div class="output" id="output">
+<div id="output-header" class="output-header hide">
+<span class="output-label" data-i18n="retrieve.output_msg_title">Message</span>
+<button class="copy-btn" id="output-copy-btn" data-i18n="global.copy">Copy</button>
+</div>
+<div class="output-box" id="output-box"></div>
+<div id="image-preview-wrap" class="image-preview-wrap"></div>
+<div id="download-buttons-wrap" class="output-actions">
+<button class="btn secondary" id="btn-new-secret" data-i18n="retrieve.btn_new_secret">Create new secret</button>
+</div>
+<div class="deleted-note" id="deleted-note" data-i18n="retrieve.deleted">This secret has been irrevocably deleted.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/vendor/qrcode.min.js"></script>
+<div id="ts-widget"></div>
+<script src="/js/crypto.js"></script>
+<script src="/js/strip-metadata.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>Donate – SecretDrop.to</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="Support SecretDrop with a Monero donation. Help keep the zero-knowledge service free and ad-free.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/donate">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+<a href="/" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</button>
+</header>
+<main class="page">
+<div class="page-head">
+<a href="/" class="page-back">← Back</a>
+<h1>Support SecretDrop</h1>
+</div>
+<p class="page-lead">SecretDrop runs on donations and stays free for everyone. If it helps you, send a little back.</p>
+
+<div class="donate-hero">
+<div class="donate-qr-card">
+<div class="donate-qr-label">Monero · XMR</div>
+<div id="donate-qr" class="donate-qr"></div>
+<div class="donate-qr-hint">Scan with your wallet</div>
+</div>
+<div class="donate-details">
+<h3>Or paste the address</h3>
+<div id="donate-address" class="donate-address"><span>48bRBzhf</span><span>mUbFikkG</span><span>2DQxb91D</span><span>PqfpaPme</span><span>2bshhJy8</span><span>5pTQCipa</span><span>9NepR6uN</span><span>H5nGLBMf</span><span>ZGRGdivs</span><span>ZE7CB6kt</span><span>mc1RYKha</span><span>PAxU9PQ</span></div>
+<button class="btn donate-copy-btn" data-copy-target="donate-address">Copy Address</button>
+<div class="donate-warn">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+<span>Before sending, compare the first and last characters in your wallet with our <a href="/monero.txt">PGP-signed address</a>. Crypto transactions are final.</span>
+</div>
+</div>
+</div>
+
+<div class="donate-supports-grid">
+<div class="donate-support-card">
+<svg class="donate-support-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+<strong>Servers</strong><span>Hosting and bandwidth</span>
+</div>
+<div class="donate-support-card">
+<svg class="donate-support-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+<strong>Tor Relay</strong><span>Network uptime</span>
+</div>
+<div class="donate-support-card">
+<svg class="donate-support-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+<strong>Features</strong><span>New code and fixes</span>
+</div>
+<div class="donate-support-card">
+<svg class="donate-support-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+<strong>No Ads</strong><span>No tracking, ever</span>
+</div>
+</div>
+
+<div class="donate-context">
+<div class="side-card">
+<h4>Why Monero?</h4>
+<p>Monero hides amounts, senders, and recipients by default. Even we can't see who donates. That's the point.</p>
+</div>
+<div class="side-card">
+<h4>Other ways to help</h4>
+<p><a href="https://relay.secretdrop.to/sponsor" data-onion-href="http://relaysdwbfw2ey2btzywtebmvytqqr5gw47udzw3qgx4shsqcbvuplid.onion/sponsor" target="_blank" rel="noopener noreferrer">Sponsor a Tor relay</a> we operate for you, run your own <a href="https://relay.secretdrop.to" data-onion-href="http://relaysdwbfw2ey2btzywtebmvytqqr5gw47udzw3qgx4shsqcbvuplid.onion" target="_blank" rel="noopener noreferrer">Tor relay</a>, share SecretDrop with privacy-minded friends, or report bugs via <a href="/pgp">PGP-encrypted email</a>.</p>
+</div>
+</div>
+</main>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/vendor/qrcode.min.js"></script>
+<script src="/js/subpages.js"></script>
+</body>
+</html>

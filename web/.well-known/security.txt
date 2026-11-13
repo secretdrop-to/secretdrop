@@ -1,0 +1,8 @@
+Contact: mailto:secretdropto@protonmail.com
+Encryption: openpgp4fpr:81767114C05B3045007124602630DF2786E339A6
+Encryption: https://secretdrop.to/pgp
+Policy: https://github.com/secretdrop-to/secretdrop/blob/main/SECURITY.md
+Preferred-Languages: en
+Canonical: https://secretdrop.to/.well-known/security.txt
+Canonical: http://secretdimtmcoa7iq2lqkmwmrbze5qknena75f5xlge226jmxfrcg5yd.onion/.well-known/security.txt
+Expires: 2027-09-30T23:59:59.000Z

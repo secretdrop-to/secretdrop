@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>Zero-Knowledge Security – SecretDrop.to</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="How SecretDrop protects one-time secret links: AES-256-GCM in your browser, Argon2id, size padding, no logs and a Tor onion service.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/security">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/security.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Zero-Knowledge Security","description":"How SecretDrop protects one-time secret links: AES-256-GCM in your browser, Argon2id, size padding, no logs and a Tor onion service.","url":"https://secretdrop.to/security","inLanguage":"en","version":"1.0","datePublished":"2026-11","dateModified":"2026-11","author":{"@type":"Organization","name":"SecretDrop.to","url":"https://secretdrop.to"},"publisher":{"@type":"Organization","name":"SecretDrop.to","url":"https://secretdrop.to"}}
+</script>
+</head>
+<body>
+<div class="wrap">
+<header>
+<a href="/" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</button>
+</header>
+<main>
+<div class="page-head-sub">
+<a href="/" class="page-back">← Back</a>
+<h1 class="subpage-h2">Security</h1>
+</div>
+<p class="subpage-intro">How SecretDrop protects your one-time secret links with zero-knowledge encryption in your browser. Zero-knowledge means that our server stores your secret but never holds a key that could read it. This document covers the website secretdrop.to and our onion service, but not Cloudflare's own systems. Plain words first, with technical details in the expandable boxes for anyone who wants to check them.</p>
+<p class="wp-version">Version 1.0, November 2026</p>
+<div class="panel wp-panel">
+<div class="panel-body">
+<div class="canary-content wp-content">
+<h2 class="h3-first" id="in-short">In short</h2>
+<ul class="policy-list">
+<li>Your secret is encrypted in your browser before anything is uploaded. Our server only ever receives ciphertext.</li>
+<li>The key travels inside the link, after the #. It never reaches our server.</li>
+<li>A secret can be opened exactly once. Then it is deleted. Unopened secrets expire on their own.</li>
+<li>Every message is padded to the same size, so not even its length is visible.</li>
+<li>No accounts, no IP logs, no cookies from us, no analytics.</li>
+<li>You can use SecretDrop entirely inside Tor through our onion service.</li>
+<li>Like every web app, SecretDrop depends on our server, and on the clearnet site also on Cloudflare, delivering unmodified code. The <a href="#threats">threat model</a> lists this and the other limits.</li>
+</ul>
+<h2 class="h3-section" id="design">Design choices at a glance</h2>
+<div class="wp-table-wrap">
+<table class="wp-table">
+<thead><tr><th>Choice</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Argon2id for passwords</td><td>every guess costs 64 MiB of memory and three passes</td></tr>
+<tr><td>Size padding</td><td>the length of a message stays hidden</td></tr>
+<tr><td>256-bit link keys</td><td>a wide safety margin, also against future quantum computers</td></tr>
+<tr><td>Refusing weak passwords</td><td>short and common passwords are the usual weak spot</td></tr>
+<tr><td>Onion service with proof of work</td><td>no Cloudflare and no third-party bot check</td></tr>
+<tr><td>Metadata removal by default</td><td>photos and file names often reveal more than the content</td></tr>
+<tr><td>Monthly warrant canary</td><td>a signed, regularly renewed statement about legal requests</td></tr>
+<tr><td>No access logs</td><td>we keep no record of visitors to hand over. On the clearnet site, Cloudflare keeps its own</td></tr>
+</tbody>
+</table>
+</div>
+<h2 class="h3-section" id="contents">Contents</h2>
+<ol class="policy-list">
+<li><a href="#flow">How a secret travels</a></li>
+<li><a href="#encryption">Encryption</a></li>
+<li><a href="#passwords">Passwords</a></li>
+<li><a href="#storage">What the server stores</a></li>
+<li><a href="#metadata">Hiding metadata</a></li>
+<li><a href="#deletion">Retrieval and deletion</a></li>
+<li><a href="#tracking">No logs, no tracking</a></li>
+<li><a href="#infrastructure">Network and server</a></li>
+<li><a href="#onion">Tor onion service</a></li>
+<li><a href="#quantum">Quantum safety</a></li>
+<li><a href="#threats">Threat model</a></li>
+<li><a href="#transparency">Transparency and verification</a></li>
+<li><a href="#references">Standards and references</a></li>
+<li><a href="#glossary">Glossary</a></li>
+</ol>
+<h2 class="h3-section" id="flow">1. How a secret travels</h2>
+<figure class="wp-figure">
+<svg class="wp-diagram" viewBox="0 0 300 362" role="img" aria-labelledby="wp-diagram-title">
+<title id="wp-diagram-title">The ciphertext travels through our server. The key travels inside the link, through a channel you choose.</title>
+<defs>
+<marker id="wp-ah-server" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="wp-ah--server" d="M0 0L10 5L0 10z"></path></marker>
+<marker id="wp-ah-key" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="wp-ah--key" d="M0 0L10 5L0 10z"></path></marker>
+</defs>
+<rect class="wp-box" x="2" y="2" width="192" height="60" rx="12"></rect>
+<text class="wp-title" x="16" y="28">Your browser</text>
+<text class="wp-sub" x="16" y="48">creates key, encrypts</text>
+<line class="wp-line wp-line--server" x1="98" y1="62" x2="98" y2="143" marker-end="url(#wp-ah-server)"></line>
+<text class="wp-label wp-label--server" x="108" y="108">ID + ciphertext</text>
+<rect class="wp-box wp-box--server" x="2" y="150" width="192" height="60" rx="12"></rect>
+<text class="wp-title" x="16" y="176">Our server</text>
+<text class="wp-sub" x="16" y="196">stores only ciphertext</text>
+<line class="wp-line wp-line--server" x1="98" y1="210" x2="98" y2="291" marker-end="url(#wp-ah-server)"></line>
+<text class="wp-label wp-label--server" x="108" y="246">ciphertext,</text>
+<text class="wp-label wp-label--gone" x="108" y="263">then deleted</text>
+<rect class="wp-box" x="2" y="298" width="192" height="60" rx="12"></rect>
+<text class="wp-title" x="16" y="324">Recipient's browser</text>
+<text class="wp-sub" x="16" y="344">decrypts locally</text>
+<path class="wp-line wp-line--key" d="M194 32H276V328H201" marker-end="url(#wp-ah-key)"></path>
+<text class="wp-label wp-label--key" x="268" y="176" text-anchor="end">link</text>
+<text class="wp-label wp-label--key" x="268" y="193" text-anchor="end">#id.key</text>
+</svg>
+<figcaption class="wp-caption">Solid lines pass through our server, and on the clearnet site also through Cloudflare. The dashed line is the link with the key, which you send to the recipient yourself, for example in a chat. The key in it never reaches our server.</figcaption>
+</figure>
+<ol class="policy-list">
+<li>You write a message or choose files. Your browser creates a random key and encrypts everything locally.</li>
+<li>Only the encrypted data goes to our server, together with a random ID. The key stays with you.</li>
+<li>You receive a link. The ID and the key both sit after the #, and only the ID ever reaches our server. You send the link to the recipient.</li>
+<li>The recipient opens the link and clicks <strong>Retrieve secret</strong>. Their browser downloads the encrypted data and decrypts it locally.</li>
+<li>Right before our server sends the data, it deletes it. From then on, the link works for nobody.</li>
+</ol>
+<figure class="wp-link">
+<div class="wp-link-url"><span class="lk-addr">https://secretdrop.to/</span><span class="lk-id">#3f9c2b7e-5d1a-4c83-9b2e-7a14c6d0e21a</span><span class="lk-key">.Qk7fR2xLp9vT4mWz8NcY1bHs6JdE3gUa5oKqXiV-x2M</span></div>
+<div class="wp-link-legend"><span class="lk-addr">address</span><span class="lk-id">ID, sent to our server</span><span class="lk-key">key, never sent to our server</span></div>
+<figcaption class="wp-caption">With a password, the link ends after the ID.</figcaption>
+</figure>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: link format and steps</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p><strong>Link format.</strong> <code>https://secretdrop.to/#&lt;id&gt;.&lt;key&gt;</code>. The ID is a random UUID (version 4, 122 random bits) that our server creates with <code>crypto.randomUUID()</code>. The key is 32 random bytes from <code>crypto.getRandomValues()</code>, written as 43 characters of base64url. Everything after the # is called the fragment. JavaScript in your browser reads it, and browsers do not include it in requests to the server. With a password, the link contains only the ID and the password takes the place of the key. The Code tab shows only the part after the #. It opens the secret on secretdrop.to and on our onion service, so it needs the same care as the link.</p>
+<p><strong>Creating a secret, step by step.</strong></p>
+<ol class="policy-list">
+<li>Your browser creates a random salt. Without a password, it also creates a 256-bit key. With a password, it runs Argon2id on the password and the salt instead.</li>
+<li>It packs the content together with its metadata, pads it and encrypts it with AES-256-GCM.</li>
+<li>It asks our server for a random ID. The server signs the ID, and the signature works only once and only for two minutes. On the clearnet site, the server checks Turnstile before it hands out the ID. On the onion service, your browser solves a small proof of work for the signed ID instead.</li>
+<li>It computes the verification tag for the ID.</li>
+<li>It uploads the ciphertext to <code>POST /api/store</code>. The signed ID, the expiry window, the salt and the tag travel in request headers.</li>
+</ol>
+<p><strong>Opening a secret, step by step.</strong></p>
+<ol class="policy-list">
+<li>Your browser reads the ID and the key from the fragment and checks the format.</li>
+<li>After your click, it asks <code>GET /api/auth/&lt;id&gt;</code> for the salt.</li>
+<li>It derives the keys, with Argon2id if there is a password, and computes the verification tag.</li>
+<li>It sends the tag to <code>POST /api/retrieve/&lt;id&gt;</code>. The server compares it in constant time, deletes the entry and then returns the ciphertext.</li>
+<li>Your browser decrypts the ciphertext, removes the padding and shows the content.</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="encryption">2. Encryption</h2>
+<p>SecretDrop encrypts with AES-256-GCM, a standardized and widely studied cipher. GCM is authenticated encryption: any change to the encrypted data is detected, so nobody can alter a secret without the recipient's browser noticing.</p>
+<p class="tor-intro">All cryptography runs in your browser through the built-in Web Crypto API, except Argon2id, which runs as WebAssembly. Our server never takes part in encrypting or decrypting.</p>
+<div class="wp-table-wrap">
+<table class="wp-table">
+<thead><tr><th>Purpose</th><th>Algorithm</th><th>Standard</th></tr></thead>
+<tbody>
+<tr><td>Encryption</td><td>AES-256-GCM</td><td>FIPS 197, NIST SP 800-38D</td></tr>
+<tr><td>Key derivation</td><td>HKDF-SHA-256</td><td>RFC 5869</td></tr>
+<tr><td>Passwords</td><td>Argon2id, 64 MiB, 3 passes</td><td>RFC 9106</td></tr>
+<tr><td>Verification tag</td><td>HMAC-SHA-256</td><td>RFC 2104</td></tr>
+<tr><td>Randomness</td><td>crypto.getRandomValues()</td><td>W3C Web Cryptography API</td></tr>
+<tr><td>Size padding</td><td>Padmé</td><td>PETS 2019</td></tr>
+<tr><td>Transport on the clearnet</td><td>TLS 1.3 with X25519MLKEM768 where supported</td><td>RFC 8446, FIPS 203</td></tr>
+</tbody>
+</table>
+</div>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: keys, IVs and the verification tag</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Key derivation.</strong> The 256-bit link key, or the Argon2id output for passwords, goes into HKDF-SHA-256 with an empty salt, which is fine because the input is already uniformly random. HKDF derives two independent subkeys with separate labels: <code>secretdrop:aes-gcm-256</code> for encryption and <code>secretdrop:hmac-auth</code> for the verification tag. No key is used for two purposes.</li>
+<li><strong>Fresh keys.</strong> Every secret gets its own key and a random 96-bit IV, so a key and IV pair is never used twice.</li>
+<li><strong>Verification tag.</strong> Your browser computes HMAC-SHA-256 over the secret ID with the second subkey. The server stores this tag and compares it in constant time when someone retrieves the secret. The tag does not reveal the key. It is a fixed value, though, so anyone with a copy of it could retrieve the secret and thereby destroy it.</li>
+<li><strong>Randomness.</strong> Keys, IVs and salts come from <code>crypto.getRandomValues()</code>, the cryptographically secure random number generator of your browser.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="passwords">3. Passwords</h2>
+<p>If you add a password, the link no longer contains a key. The password itself becomes the key, so the link alone is useless to anyone who intercepts it. Send the link and the password through two different channels.</p>
+<p class="tor-intro">Passwords are processed with Argon2id, a variant of Argon2, the winner of the Password Hashing Competition. Every guess costs 64 MiB of memory and three passes, which makes guessing on a large scale slow and expensive, even with graphics cards.</p>
+<p class="tor-intro">The create form also protects you from weak choices. It refuses passwords that are too short or too common, and the dice button creates a strong passphrase for you.</p>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: Argon2id and the strength check</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Argon2id parameters.</strong> Memory 64 MiB, 3 iterations, parallelism 1, a 16-byte random salt and 32 bytes of output. The password is normalized to Unicode NFC first, so the same characters always give the same key. The output enters HKDF like a link key. The parameters are fixed in the code.</li>
+<li><strong>Guessing stays expensive.</strong> The verification tag is computed only after Argon2id. Anyone with a copy of our database therefore has to run Argon2id once for every guess.</li>
+<li><strong>Strength check.</strong> Your browser estimates the strength of the password with a simple formula based on its length and the kinds of characters it uses. Below about 40 bits, or when the password is among the 100,000 most common passwords from Have I Been Pwned, it is refused. Simple tricks like 0 for o or a number at the end are recognized. The formula can still rate a predictable password as strong, so for anything important, use the dice. The check runs locally and never sends the password anywhere.</li>
+<li><strong>No hint from the download.</strong> The list is loaded for everyone who opens the create form, not only for people who type a password. Fetching it reveals nothing. If the list cannot be loaded, a secret with a password is not created.</li>
+<li><strong>Dice passphrases.</strong> Five words from the EFF short word list with 1,296 words, about 52 bits. Each word is picked with <code>crypto.getRandomValues()</code> and rejection sampling, so every word is equally likely.</li>
+<li><strong>WebAssembly.</strong> Secrets without a password do not need WebAssembly and also work in Tor Browser on the Safer level.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="storage">4. What the server stores</h2>
+<p>For each secret, our server keeps exactly six things. All of them are deleted together, after the retrieval or when the secret expires.</p>
+<div class="wp-table-wrap">
+<table class="wp-table">
+<thead><tr><th>Stored</th><th>Why it is needed</th></tr></thead>
+<tbody>
+<tr><td>Random ID</td><td>finds the right entry</td></tr>
+<tr><td>Encrypted data</td><td>the secret itself, unreadable without the link</td></tr>
+<tr><td>Random salt</td><td>turns a password into a key. Secrets without a password get one too, so both look the same</td></tr>
+<tr><td>Verification tag</td><td>checks a retrieval without our server learning the key</td></tr>
+<tr><td>Attempt counter</td><td>deletes the secret after five wrong attempts</td></tr>
+<tr><td>Expiry time, rounded up to the next ten minutes</td><td>deletes the secret on time and shows the creation time only to within ten minutes</td></tr>
+</tbody>
+</table>
+</div>
+<p>It never receives your key, your password, the content, file names, file types or the number of files, and it stores no IP addresses. Without the link it cannot be read, and apart from a short version header and its padded size it looks like random bytes.</p>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: what a copy of the database shows</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<p>The database has one table with exactly these columns and a second table with a single number, the total size of all stored data. A copy of it would show how many secrets exist, their padded sizes, their rounded expiry times, failed attempts and the order in which they were created. It would not show any content, keys, names or IP addresses.</p>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="metadata">5. Hiding metadata</h2>
+<p>Encryption hides the content. Metadata can still say a lot: how long a message is, what a file is called, where a photo was taken. SecretDrop hides as much of it as it can.</p>
+<ul class="policy-list">
+<li>Every message, and every set of files up to 32 KB, is padded to exactly the same size before encryption. A one-word password and a long letter look identical.</li>
+<li>Larger uploads are rounded up to fixed steps. They grow by at most about 6 percent below 64 KB and about 3 percent above. Only the approximate size stays visible, never the exact number of bytes.</li>
+<li>File names and file types are encrypted together with the content. By default, the recipient also sees a random file name instead of the original, with the file extension kept.</li>
+<li>By default, JPEG, PNG and WebP images are cleaned before encryption, which removes location, camera and other EXIF data. If that fails, nothing is uploaded. Other image formats are only sent once you turn this option off, and other files are sent unchanged.</li>
+<li>The stored data does not show whether a password was set. Only the timing of the requests can hint at it.</li>
+</ul>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: frame format and padding</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Byte layout.</strong> Each frame starts with a 4-byte big-endian length, followed by the header <code>{"v":5}</code>, the 12-byte IV and the ciphertext with its 16-byte GCM tag. Type, item lengths, file names and MIME types are inside the encrypted part.</li>
+<li><strong>Version header.</strong> The header is not covered by the GCM authentication. Changing it cannot reveal or alter a secret. At most, it makes decryption fail.</li>
+<li><strong>Padding.</strong> Content up to 32,768 bytes is padded to 32,768 bytes, so every message is sent and stored as exactly 32,807 bytes. Messages are limited to 10,000 characters, which always fits. Above that, sizes are rounded up with the Padmé scheme, which leaves only about 320 possible sizes between 32 KB and 50 MB.</li>
+<li><strong>Same pattern.</strong> The browser always creates a salt and makes the same requests in the same order, with or without a password. Only the time Argon2id needs between them differs.</li>
+<li><strong>Image cleaning.</strong> The browser cuts the metadata out of the file and keeps only what is needed to display the image, plus the rotation of JPEG photos. Everything else is dropped, including unknown parts, color profiles, embedded previews and data appended after the image. The image data itself is not changed, so there is no quality loss. If the cleaned image does not open as a test, the upload stops with a notice instead of sending the original. Remove sensitive metadata from documents yourself.</li>
+<li><strong>Time zone.</strong> The expiry time shown to you is calculated in your browser. Our server never learns your time zone.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="deletion">6. Retrieval and deletion</h2>
+<ul class="policy-list">
+<li>Our server deletes a secret right before it sends the data. If the download breaks off, the secret is gone and the sender has to create a new one.</li>
+<li>Opening a link does not use up the secret. It is only fetched when someone clicks <strong>Retrieve secret</strong>, so link previews in messengers and automated email scanners cannot destroy it.</li>
+<li>After five wrong attempts, the secret is deleted.</li>
+<li>Unopened messages expire after 1 hour to 7 days, files after 1 hour to 3 days, as chosen by the sender. Because expiry times are rounded up, a secret can stay up to ten minutes longer.</li>
+<li>There are no backups and no copies on other machines.</li>
+<li>After the secret is retrieved, the page removes the key from the address bar. Coming back with the back button does not show the secret again.</li>
+<li>Messages are always shown as plain text. Received files are never displayed as web pages, so a file cannot run code on our site. Images and videos get a preview, text files are shown as plain text, and everything else is offered as a download.</li>
+<li>To delete a secret before it is read, open the link yourself and retrieve it.</li>
+<li>If a secret is already gone although it should still be valid, assume that someone else has opened it. Nobody can put it back under the same link, because IDs come only from our server and each one can be filled only once.</li>
+</ul>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: deleting and attempts</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Overwriting.</strong> Deleted entries are overwritten in the database file instead of just being marked as free. The database's change log is truncated after every retrieval and every minute, and the memory buffers our code holds are zeroed. Like on any disk, copies of the ciphertext can remain in free space until they are overwritten. The disk encryption protects them while the server is switched off, not against someone with access to the running system.</li>
+<li><strong>Attempts.</strong> A wrong verification tag raises the counter. After five wrong attempts, the entry is deleted. A malformed link is detected in your browser before it contacts the server, so it costs nothing. A wrong password does count.</li>
+<li><strong>Cleanup.</strong> Every minute, our server deletes all secrets whose time is up. It cannot tell messages from files by looking at the data, but every message has the same fixed size. Anything well above that size can only be a file, and the server never keeps it longer than 3 days, even if a longer time is requested.</li>
+<li><strong>Clean start.</strong> All input fields are emptied when the page loads, so a browser cannot restore an old message or password.</li>
+<li><strong>Limits.</strong> Up to 50 MB and 10 files per secret.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="tracking">7. No logs, no tracking</h2>
+<ul class="policy-list">
+<li>Our web server writes no access logs and discards error logs. The backend writes no logs at all.</li>
+<li>IP addresses are kept only in the server's memory, for short-lived rate limits against abuse, and are never written to disk.</li>
+<li>On the clearnet site, every request passes through Cloudflare, which may keep its own logs and set its own technical cookies. The onion service avoids Cloudflare completely.</li>
+<li>No sign-up, no email address, no cookies from us, no analytics, no tracking pixels.</li>
+<li>Your browser keeps only your language and theme choice, in session storage, which is cleared when you close the tab.</li>
+<li>On the clearnet site, Cloudflare Turnstile checks that you are human. It is the only script from a third-party server, and it loads only when you start writing a secret. The onion service has none.</li>
+<li>Apart from Turnstile, every file comes from our own server. There are no external fonts, images or libraries.</li>
+<li>The QR code for your link is drawn in your browser. The link is never sent to a QR service.</li>
+</ul>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: Turnstile and libraries</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Turnstile and your keys.</strong> The Turnstile script can read the page it runs on. It therefore never runs while a secret is opened: it does not load while a secret link is open, the page reloads into a clean state before the retrieve form appears if Turnstile was loaded, and any retrieved secret is cleared before Turnstile loads. On the clearnet create page it does share the page with your message and the finished link, so there you also rely on Cloudflare.</li>
+<li><strong>Self-hosted libraries.</strong> We serve our own copies of argon2.js and qrcode.min.js. They are byte-identical to the published releases and listed with their licenses in <a href="/licenses.txt">licenses.txt</a>.</li>
+<li><strong>Readable encryption code.</strong> Key generation, key derivation, encryption and decryption are in a single file, <a href="/js/crypto.js">/js/crypto.js</a>, which you can open and read in your browser.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="infrastructure">8. Network and server</h2>
+<ul class="policy-list">
+<li>HTTPS only, enforced with HSTS for one year, including all subdomains.</li>
+<li>On the clearnet site, your browser connects to Cloudflare with TLS 1.2 or 1.3, and with post-quantum key exchange (X25519MLKEM768) if it supports it. Our server supports post-quantum key exchange as well, for the connection from Cloudflare.</li>
+<li>A strict Content Security Policy: scripts only from our own origin, plus Turnstile on the clearnet create page. No inline scripts, no plugins, no embedding in other sites.</li>
+<li>A CAA record limits which certificate authorities may issue certificates for our domain, and we are alerted when a new certificate for it appears in the public Certificate Transparency logs.</li>
+<li>The API accepts only well-formed IDs, and browsers let only our own pages read its answers. Its error messages are short and reveal nothing about the server.</li>
+<li>The backend runs as an unprivileged user in a strict sandbox. Its outgoing connections are limited to what the anti-abuse check needs.</li>
+<li>The server's disk, including its swap space, is fully encrypted, which protects it while the server is switched off, and crash dumps are disabled.</li>
+</ul>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: headers and sandbox</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Headers on every page.</strong> Content-Security-Policy with <code>object-src 'none'</code>, <code>base-uri 'none'</code>, <code>form-action 'none'</code> and <code>frame-ancestors 'none'</code>. Also X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy no-referrer, a Permissions-Policy that turns off camera, microphone and location, and Cross-Origin-Opener-Policy with Cross-Origin-Embedder-Policy for cross-origin isolation.</li>
+<li><strong>Cloudflare to our server.</strong> This connection is encrypted as well and uses a certificate that Cloudflare checks strictly. In return, Cloudflare has to show our server a client certificate that only our Cloudflare account holds, so our server turns away requests from any other Cloudflare account.</li>
+<li><strong>Sandbox.</strong> No new privileges, a read-only system, no access to home directories or devices, a private temporary directory, protected kernel settings, a filtered set of system calls and no capabilities.</li>
+<li><strong>Rate limits.</strong> Every API endpoint has its own limit.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="onion">9. Tor onion service</h2>
+<p>Our onion service lets you create and open secrets without ever leaving the Tor network. There is no Cloudflare, no DNS lookup and no exit node in between.</p>
+<div class="pgp-box pgp-box--onion">
+<div class="pgp-header"><span>Tor Onion Service</span></div>
+<a href="http://secretdimtmcoa7iq2lqkmwmrbze5qknena75f5xlge226jmxfrcg5yd.onion" class="onion-link" target="_blank" rel="noopener noreferrer">http://secretdimtmcoa7iq2lqkmwmrbze5qknena75f5xlge226jmxfrcg5yd.onion</a>
+</div>
+<ul class="policy-list">
+<li>After you create a secret, the Link tab is preselected and gives the clearnet link, which opens in any browser. Choose the Onion tab if the recipient uses Tor Browser, so the secret is also opened inside Tor.</li>
+<li>Tor Browser offers the onion address on its own when you visit the clearnet site.</li>
+<li>All our official addresses are listed in a PGP-signed file, <a href="/mirrors.txt">mirrors.txt</a>.</li>
+<li>Instead of Turnstile, your browser solves a small puzzle before it creates a secret. It stops simple scripts without any third-party check. Limits for each Tor circuit and an overall cap on new secrets and file uploads do the main work against abuse. Tor's own proof-of-work defense also protects the service against flooding.</li>
+</ul>
+<div class="faq-item">
+<button type="button" class="faq-question" aria-expanded="false">
+<span>Technical details: proof of work</span>
+<span class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>
+</button>
+<div class="faq-answer">
+<div class="faq-answer-inner">
+<div class="faq-answer-body">
+<ul class="policy-list">
+<li><strong>Puzzle.</strong> The server issues a challenge signed with HMAC. Your browser searches for a number whose SHA-256 hash, together with the challenge, starts with three zero hex digits. Challenges are valid for two minutes and work only once. The server keeps no list of issued challenges, only of used ones.</li>
+<li><strong>Tor defense.</strong> The onion service has Tor's built-in proof-of-work defense turned on. When it is under heavy load, Tor lets clients that solve a small proof of work connect first.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h2 class="h3-section" id="quantum">10. Quantum safety</h2>
+<p>Future quantum computers threaten public-key cryptography such as RSA and elliptic curves. The encryption of your secret uses none of it. The key travels inside the link, so there is no key exchange that a quantum computer could break.</p>
+<ul class="policy-list">
+<li>Grover's algorithm, the best known quantum attack on ciphers like AES, at most halves the effective key length. A 256-bit key keeps about 128 bits of security, which is why our link keys are a full 256 bits.</li>
+<li>HKDF and HMAC with SHA-256 are hash-based and not broken by any known quantum attack.</li>
+<li>On the clearnet site, Cloudflare uses post-quantum key exchange with browsers that support it, and our server supports it for the connection from Cloudflare. This protects connections against being recorded now and decrypted later.</li>
+<li>Connections to our onion service rely on Tor's own encryption. Tor is introducing post-quantum key exchange step by step, but onion services do not use it throughout yet.</li>
+<li>Even without it, a recorded connection contains only ciphertext. Reading it later would also need the link, or for a secret with a password, guessing the password offline.</li>
+<li>For passwords, quantum computers do not change the basic rule: a strong password, like a dice passphrase, stays strong.</li>
+</ul>
+<h2 class="h3-section" id="threats">11. Threat model</h2>
+<p>This model assumes that you opened the real secretdrop.to or our onion address and that your browser works as intended.</p>
+<p class="tor-intro"><strong>SecretDrop protects you from:</strong></p>
+<ul class="policy-list">
+<li><strong>People on your network,</strong> such as a public Wi-Fi or your internet provider. They see only encrypted traffic.</li>
+<li><strong>Cloudflare and our own server,</strong> as long as they deliver our code unchanged. Both only ever handle ciphertext and never see a key or a password.</li>
+<li><strong>Someone who seizes or copies our database.</strong> Without the links, the data cannot be read. Secrets with a strong password stay protected by Argon2id.</li>
+<li><strong>Link previews and email scanners.</strong> They cannot use up a secret, because retrieval needs a click.</li>
+<li><strong>Spell check and text prediction in your browser.</strong> Some browsers send typed text to their maker, such as Chrome with enhanced spell check and Edge with Microsoft Editor or text prediction. Our page turns both off in all its fields, so neither your message nor a pasted key is sent there.</li>
+<li><strong>Someone who reads a link on its way.</strong> They cannot open the secret unnoticed, because the recipient would then find it gone. With a password, the link alone is worthless.</li>
+</ul>
+<p><strong>SecretDrop cannot protect you from:</strong></p>
+<ul class="policy-list">
+<li><strong>A compromised server or Cloudflare.</strong> Whoever controls our server, or Cloudflare on the clearnet site, could deliver modified JavaScript that leaks keys. No web-based tool can rule this out completely, and a change aimed at a single visitor would be hard to notice. The onion service takes Cloudflare out of the picture.</li>
+<li><strong>Turnstile on the clearnet create page.</strong> Cloudflare's script runs next to your message and the finished link. Use the onion service if you do not want to rely on it.</li>
+<li><strong>A compromised device.</strong> Malware, or browser extensions that can read every page, can also read your secret.</li>
+<li><strong>What Cloudflare sees.</strong> On the clearnet site, Cloudflare sees IP addresses, times, browser details, the secret ID and the encrypted data, so it can link sender and recipient. It never sees keys or passwords.</li>
+<li><strong>Guessing weak passwords.</strong> Secrets without a password cannot be guessed. With a password, someone holding a copy of our database, or Cloudflare, could try guesses offline. Argon2id makes every guess expensive, but only a strong password, such as a dice passphrase, keeps guessing out of reach.</li>
+<li><strong>Destroying a secret.</strong> Anyone who knows the ID can check whether a secret still exists and destroy it with five wrong attempts. Cloudflare on the clearnet site and anyone with a copy of our database also know its verification tag, so they could retrieve it and thereby destroy it. None of them can read it.</li>
+<li><strong>The channel you use.</strong> Anyone who can read the chat or email that carries the link can open the secret first. If they can also change your messages, they can pass on a new link with the same content, and the recipient would not notice. For sensitive secrets, add a password and send it through a second channel.</li>
+<li><strong>Your clipboard and history.</strong> A copied link or password stays in your clipboard until you copy something else. Your browser may also remember a link you opened, so if you do not retrieve a secret right away, open the link in a private window.</li>
+<li><strong>The size of large files.</strong> Rounding hides only the exact size. The approximate size stays visible.</li>
+<li><strong>The recipient.</strong> What the recipient does with the secret, for example screenshots or copies, is outside our control.</li>
+</ul>
+<h2 class="h3-section" id="transparency">12. Transparency and verification</h2>
+<ul class="policy-list">
+<li>Our <a href="/canary">warrant canary</a> is updated every month, signed with our PGP key and tied to a recent Bitcoin block, so it cannot have been written in advance.</li>
+<li>Our <a href="/pgp">PGP key</a> is used for signatures and encrypted contact.</li>
+<li>Our browser code is served as plain files, not minified or bundled. Only the two libraries are minified, and they match their published releases byte for byte.</li>
+<li>The full source code of this site and our server is public on <a href="https://github.com/secretdrop-to/secretdrop" rel="noopener noreferrer">GitHub</a>. You can compare it with the files your browser loads.</li>
+<li>You can check it yourself: open the developer tools of your browser and watch the network tab while you create a secret. Only the ciphertext, the ID, the salt, the verification tag, the chosen expiry window and the anti-abuse token leave your device.</li>
+<li>Security reports are welcome. Contact details are in <a href="/.well-known/security.txt">security.txt</a>.</li>
+<li>SecretDrop has not been audited by a third party so far. This document and our public source code are meant to make your own review possible.</li>
+</ul>
+<h2 class="h3-section" id="references">13. Standards and references</h2>
+<ul class="policy-list">
+<li>AES: FIPS 197. GCM: NIST SP 800-38D.</li>
+<li>HKDF: RFC 5869. HMAC: RFC 2104. SHA-256: FIPS 180-4.</li>
+<li>Argon2: RFC 9106.</li>
+<li>Padmé: Nikitin et al., Reducing Metadata Leakage from Encrypted Files and Communication with PURBs, PETS 2019.</li>
+<li>TLS 1.3: RFC 8446. X25519: RFC 7748. ML-KEM: FIPS 203.</li>
+<li>Web Crypto: W3C Web Cryptography API.</li>
+<li>Onion services: Tor Rendezvous Specification, version 3.</li>
+</ul>
+<h2 class="h3-section" id="glossary">14. Glossary</h2>
+<ul class="policy-list">
+<li><strong>AES-256-GCM.</strong> A standard cipher that encrypts data and also detects any tampering.</li>
+<li><strong>Argon2id.</strong> A function that turns a password into a key and makes every guess slow and memory-hungry.</li>
+<li><strong>Ciphertext.</strong> Encrypted data. Without the key it cannot be read.</li>
+<li><strong>Clearnet.</strong> The normal internet outside Tor. Here, secretdrop.to behind Cloudflare.</li>
+<li><strong>Fragment.</strong> The part of a link after the #. Browsers keep it to themselves and do not send it to servers.</li>
+<li><strong>Onion service.</strong> A website reachable only through Tor. Neither side learns the IP address of the other.</li>
+<li><strong>Padding.</strong> Filler added before encryption, so that different secrets look the same size.</li>
+<li><strong>Post-quantum.</strong> Cryptography designed to stay secure even against future quantum computers.</li>
+<li><strong>Proof of work.</strong> A small computing task your browser solves before it creates a secret. It stops simple scripts.</li>
+<li><strong>Salt.</strong> Random bytes that make the key derived from a password unique to one secret.</li>
+<li><strong>Verification tag.</strong> A value derived from the key that lets our server check a retrieval without learning the key.</li>
+<li><strong>Warrant canary.</strong> A regularly renewed, signed statement about legal requests. If it is not updated on time, assume that something is wrong.</li>
+<li><strong>Zero-knowledge.</strong> Our server stores your secret but never holds a key that could read it.</li>
+</ul>
+<p><strong>Document history.</strong> Version 1.0, November 2026: first publication.</p>
+</div>
+</div>
+</div>
+</main>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/subpages.js"></script>
+</body>
+</html>

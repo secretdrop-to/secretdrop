@@ -1,0 +1,8 @@
+node_modules/
+web/canary.txt
+.env
+*.db
+*.db-wal
+*.db-shm
+*.key
+*.pem

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script src="/js/init.js"></script>
+<title>Warrant Canary – SecretDrop.to</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="description" content="SecretDrop warrant canary. Transparency statement confirming no secret warrants, court orders, or backdoors have been received.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://secretdrop.to/canary">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+<a href="/" class="brand" aria-label="SecretDrop"><span class="wordmark" aria-hidden="true"><svg class="mark" viewBox="0 0 32 20" aria-hidden="true"><path class="mark-body" fill-rule="evenodd" d="M3 2H17A3 3 0 0 0 20 5V15A3 3 0 0 0 17 18H3A2 2 0 0 1 1 16V4A2 2 0 0 1 3 2ZM10.5 6A2.6 2.6 0 0 1 11.9 10.8L12.6 14H8.4L9.1 10.8A2.6 2.6 0 0 1 10.5 6Z"/><path class="mark-stub" d="M26 2H29A2 2 0 0 1 31 4V16A2 2 0 0 1 29 18H26A3 3 0 0 0 23 15V5A3 3 0 0 0 26 2Z"/></svg>SecretDrop</span></a>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme">
+<svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+<svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+</button>
+</header>
+<main>
+<div class="page-head-sub">
+<a href="/" class="page-back">← Back</a>
+<h1 class="subpage-h2">Warrant Canary</h1>
+</div>
+<p class="subpage-intro">The statement below is signed with our PGP key.</p>
+<div class="panel">
+<div class="panel-body">
+<div class="pgp-box">
+<div class="pgp-header">
+<span>Digital PGP Signature · <a href="/pgp">Verify with our public key</a></span>
+<button class="copy-btn" data-copy-target="pgp-sig-text">Copy Signature</button>
+</div>
+<pre id="pgp-sig-text"><!--#include virtual="/canary.txt" --></pre>
+<button class="copy-btn pgp-dl-btn" data-download-target="pgp-sig-text" data-download-name="secretdrop_canary.asc" data-download-mime="application/pgp-signature">Download .asc</button>
+</div>
+</div>
+</div>
+</main>
+<!--#include virtual="/_includes/footer.html" -->
+</div>
+<script src="/js/subpages.js"></script>
+</body>
+</html>

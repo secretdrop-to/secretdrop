@@ -1,0 +1,14 @@
+{
+  "name": "secretdrop-backend",
+  "version": "1.0.0",
+  "description": "API server of SecretDrop.to",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

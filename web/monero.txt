@@ -1,0 +1,17 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+SecretDrop – Monero donation address
+
+Our only Monero (XMR) donation address is:
+
+48bRBzhfmUbFikkG2DQxb91DPqfpaPme2bshhJy85pTQCipa9NepR6uNH5nGLBMfZGRGdivsZE7CB6ktmc1RYKhaPAxU9PQ
+
+If this address ever changes, we will publish a new signed message.
+-----BEGIN PGP SIGNATURE-----
+
+wnUEARYKACcFgmrMIhkJkCYw3yeG4zmmFiEEgXZxFMBbMEUAcSRgJjDfJ4bj
+OaYAAGvsAP94N3CgUlBO95s2BcJMgY5BeJfvGnb4WqknW2zeOaA1QwEAoC4D
+yxT8QgM7q58JnEvN/o92jc1cPhrZ3F/oF4ZIRAY=
+=zXeB
+-----END PGP SIGNATURE-----

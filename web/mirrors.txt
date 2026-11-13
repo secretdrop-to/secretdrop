@@ -1,0 +1,25 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+SecretDrop – official addresses
+
+https://secretdrop.to
+http://secretdimtmcoa7iq2lqkmwmrbze5qknena75f5xlge226jmxfrcg5yd.onion
+https://relay.secretdrop.to
+http://relaysdwbfw2ey2btzywtebmvytqqr5gw47udzw3qgx4shsqcbvuplid.onion
+
+Source code:
+https://github.com/secretdrop-to/secretdrop
+
+Contact:
+secretdropto@protonmail.com
+
+Any other address claiming to be SecretDrop is not ours.
+If these addresses ever change, we will publish a new signed message.
+-----BEGIN PGP SIGNATURE-----
+
+wnUEARYKACcFgmr2MDAJkCYw3yeG4zmmFiEEgXZxFMBbMEUAcSRgJjDfJ4bj
+OaYAABU4AQClSrlTm4kN/dD4WuPvSR67h1qK8F2kFEC45G5JYJrBcQEAhhC+
+aB857/vKHI9Rf47Y7GpmBzhi0tlfyCVHJAjcMgc=
+=AC+Q
+-----END PGP SIGNATURE-----

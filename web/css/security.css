@@ -1,0 +1,144 @@
+.wp-version {
+  margin: -12px 0 28px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.wp-panel {
+  max-width: calc(74ch + 2 * var(--pad-x));
+}
+.wp-content h2 {
+  color: var(--text);
+  font: 700 clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem)/1.25 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.wp-figure {
+  margin: 24px 0 8px;
+}
+.wp-diagram {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  margin: 0 auto;
+}
+.wp-box {
+  fill: var(--fill);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+}
+.wp-box--server {
+  stroke: var(--server);
+}
+.wp-title {
+  fill: var(--text);
+  font: 700 15px var(--font-body);
+}
+.wp-sub {
+  fill: var(--text-2);
+  font: 400 13px var(--font-body);
+}
+.wp-line {
+  fill: none;
+  stroke-width: 2;
+}
+.wp-line--server {
+  stroke: var(--server);
+}
+.wp-line--key {
+  stroke: var(--key);
+  stroke-dasharray: 6 5;
+}
+.wp-ah--server {
+  fill: var(--server);
+}
+.wp-ah--key {
+  fill: var(--key);
+}
+.wp-label {
+  font: 600 12.5px var(--font-body);
+}
+.wp-label--server {
+  fill: var(--server-text);
+}
+.wp-label--key {
+  fill: var(--key-text);
+}
+.wp-label--gone {
+  fill: var(--gone-text);
+}
+.wp-caption {
+  max-width: 52ch;
+  margin: 14px auto 0;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+.wp-table-wrap {
+  margin: 20px 0 8px;
+  overflow-x: auto;
+}
+.wp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.wp-table th,
+.wp-table td {
+  padding: 10px 14px 10px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.wp-table th {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+.wp-table td {
+  color: var(--text-2);
+}
+.wp-table td:first-child {
+  color: var(--text);
+  font-weight: 600;
+}
+.wp-table tr:last-child td {
+  border-bottom: 0;
+}
+.wp-link {
+  margin: 24px 0 8px;
+  text-align: center;
+}
+.wp-link-url {
+  display: inline-block;
+  max-width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  background: var(--field);
+  font: 500 14px/1.6 var(--font-mono);
+  word-break: break-all;
+  text-wrap: balance;
+}
+.wp-link-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.wp-link .lk-addr {
+  color: var(--muted);
+}
+.wp-link .lk-id {
+  color: var(--server-text);
+}
+.wp-link .lk-key {
+  color: var(--key-text);
+}
+.wp-link .wp-caption {
+  margin-top: 8px;
+}
